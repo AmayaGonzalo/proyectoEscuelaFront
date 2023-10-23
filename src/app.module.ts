@@ -1,5 +1,4 @@
 import { EscuelaModule } from './escuela/escuela.module';
-import { CursoModule } from './curso/curso.module';
 import { MateriaModule } from './materia/materia.module';
 import { EstudianteModule } from './estudiante/estudiante.module';
 import { Module } from '@nestjs/common';

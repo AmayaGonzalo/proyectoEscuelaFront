@@ -36,8 +36,7 @@ export class EscuelaService {
       }else{
         return escuela;
       }
-    }
-    catch(error){
+    }catch(error){
       throw new HttpException({
           status: HttpStatus.CONFLICT,
           error: 'Error en Escuelas - ' + error
@@ -46,15 +45,67 @@ export class EscuelaService {
   }
 
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} escuela`;
-  // }
+  async findOne(id: number):Promise<EscuelaDto> {
+    try{
+      const escuela : EscuelaDto = await this.escuelaRepositoy.findOne({ where:{ id:id }});
+      if(!escuela){
+        throw new Error('No se encontró la escuela');
+      }else{
+        return escuela;
+      }
+    }catch(error){
+      throw new HttpException({
+          status: HttpStatus.CONFLICT,
+          error: 'Error en Escuelas - ' + error
+      },HttpStatus.NOT_FOUND);
+    }    
+  }
 
-  // update(id: number, updateEscuelaDto: UpdateEscuelaDto) {
-  //   return `This action updates a #${id} escuela`;
-  // }
+  async update(id: number, escuelaDto: EscuelaDto):Promise<EscuelaDto> {
+    try{
+      const { nombre, direccion } = escuelaDto;
+      let escuela : Escuela = await this.escuelaRepositoy.findOne({ where:{ id:id }});
+      if(!escuela){
+        throw new Error('No se encontró la escuela a modificar');
+      }else{
+        if(nombre != null || nombre != undefined){
+          escuela.setNombre(nombre);
+          escuela = await this.escuelaRepositoy.save(escuela);
+          if(direccion != null || direccion != undefined){
+            escuela.setDireccion(direccion);
+            escuela = await this.escuelaRepositoy.save(escuela);
+            return escuela;
+          }else{
+            throw new Error('No se pudo cambiar la división');
+          }
+        }else{
+          throw new Error('No se pudo cambiar el nombre');
+        }
+      }
+    }catch(error){
+      throw new HttpException({
+          status: HttpStatus.CONFLICT,
+          error: 'Error en Escuelas - ' + error
+      },HttpStatus.NOT_FOUND);
+    }  
+  }
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} escuela`;
-  // }
+  async remove(id: number):Promise<{ massage:string }> {
+    try{
+      const escuela : Escuela = await this.escuelaRepositoy.findOne({ where:{ id:id }});
+      if(!escuela){
+        throw new Error('No se encontró la escuela a eliminar');
+      }else{
+        await this.escuelaRepositoy.remove(escuela);
+        return {
+          massage: "Se ha borrado la escuela: "+`${escuela.nombre}`
+        }
+      }
+    }catch(error){
+      throw new HttpException({
+          status: HttpStatus.CONFLICT,
+          error: 'Error en Escuelas - ' + error
+      },HttpStatus.NOT_FOUND);
+    }  
+  }
 }

@@ -21,12 +21,12 @@ export class CursoController {
     return await this.cursoService.findOne(id);
   }
 
-  @Put(':id')
+  @Put('modificar/:id')
   async update(@Param('id') id:number, @Body() cursoDto: CursoDto) {
     return this.cursoService.update(id, cursoDto);
   }
 
-  @Delete(':id')
+  @Delete('eliminar/:id')
   async remove(@Param('id') id:number): Promise<{ message:string }> {
     return this.cursoService.remove(id);
   }

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
 import { EscuelaService } from './escuela.service';
 import { EscuelaDto } from './dto/create-escuela.dto';
 import { Escuela } from './entities/escuela.entity';
@@ -17,18 +17,18 @@ export class EscuelaController {
     return await this.escuelaService.create(escuelaDto);
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.escuelaService.findOne(+id);
-  // }
+  @Get(':id')
+  async findOne(@Param('id') id:number):Promise<EscuelaDto> {
+    return await this.escuelaService.findOne(id);
+  }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateEscuelaDto: UpdateEscuelaDto) {
-  //   return this.escuelaService.update(+id, updateEscuelaDto);
-  // }
+  @Put('modificar/:id')
+  async update(@Param('id') id: number, @Body() escuelaDto: EscuelaDto):Promise<EscuelaDto> {
+    return await this.escuelaService.update(id, escuelaDto);
+  }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.escuelaService.remove(+id);
-  // }
+  @Delete('eliminar/:id')
+  async remove(@Param('id') id:number):Promise<{ massage:string }> {
+    return await this.escuelaService.remove(id);
+  }
 }
