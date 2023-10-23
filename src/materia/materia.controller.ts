@@ -1,34 +1,33 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
 import { MateriaService } from './materia.service';
 import { MateriaDto } from './dto/create-materia.dto';
-import { UpdateMateriaDto } from './dto/update-materia.dto';
 
 @Controller('materia')
 export class MateriaController {
   constructor(private readonly materiaService: MateriaService) {}
 
-  @Post()
+  @Post('nuevo')
   async create(@Body() materiaDto: MateriaDto):Promise<MateriaDto> {
     return await this.materiaService.create(materiaDto);
   }
 
   @Get()
-  findAll() {
-    return this.materiaService.findAll();
+  async findAll():Promise<MateriaDto[]> {
+    return await this.materiaService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.materiaService.findOne(+id);
+  async findOne(@Param('id') id:number): Promise<MateriaDto> {
+    return await this.materiaService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMateriaDto: UpdateMateriaDto) {
-    return this.materiaService.update(+id, updateMateriaDto);
+  @Put('modificar/:id')
+  async update(@Param('id') id:number, @Body() materiaDto: MateriaDto):Promise<MateriaDto> {
+    return await this.materiaService.update(id, materiaDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.materiaService.remove(+id);
+  @Delete('eliminar/:id')
+  async remove(@Param('id') id:number): Promise<{ message:string }> {
+    return await this.materiaService.remove(id);
   }
 }
