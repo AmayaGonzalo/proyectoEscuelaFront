@@ -6,6 +6,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CursoModule } from './curso/curso.module';
+import { EstudianteModule } from './estudiante/estudiante.module';
 
 @Module({
   imports: [

@@ -1,62 +1,46 @@
-/*
-https://docs.nestjs.com/providers#services
-*/
-
-import { Injectable } from '@nestjs/common';
-import { EstudianteEntity } from './estudiante.entity';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { EstudianteDto } from './dto/create-estudiante.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Estudiante } from './entities/estudiante.entity';
 import { Repository } from 'typeorm';
-import { EstudianteDto } from './estudiante.interface';
 
 @Injectable()
 export class EstudianteService {
 
-    constructor(
-        @InjectRepository(EstudianteEntity)
-        private estudianteRepository : Repository<EstudianteEntity>,
-    ){}
+constructor(@InjectRepository(Estudiante)
+            private readonly estudianteRepository:Repository<Estudiante>
+  ){}
 
-    async AddEstudiante(estudiante: EstudianteDto): Promise<any>{
-        let item = new EstudianteEntity();
-        item.nombre = estudiante.nombre;
-        item.apellido = estudiante.apellido;
-        item.dni = estudiante.dni;
-        item.direccion = estudiante.direccion;
-        const newEstudiante = await this.estudianteRepository.save(item);
+  async create(estudianteDto: EstudianteDto):Promise<EstudianteDto> {
+    try{
+      const { nombre, apellido, dni, direccion } = estudianteDto;
+      const newEstudiante : Estudiante = await this.estudianteRepository.save(new Estudiante(nombre,apellido,dni,direccion));
+      if(!newEstudiante){
+        throw new Error('No se pudo crear el nuevo estudiante');
+      }else{
         return newEstudiante;
-    }
-
-    async editarEstudiante(id: number, estudiante: EstudianteEntity): Promise<EstudianteEntity>{
-        let toUpdate = await this.estudianteRepository.findOneBy({id});
-        let update = Object.assign(toUpdate, estudiante);
-        const estudianteActualizado = await this.estudianteRepository.save(toUpdate);
-        return estudianteActualizado;
-        
-    }
-
-
-    async getEstudianteById(id: number): Promise<EstudianteEntity> {
-        return this.estudianteRepository
-          .createQueryBuilder('estudiante')
-          .where('estudiante.id = :id', { id }) // Filtrar por el id proporcionado
-          .leftJoinAndSelect('estudiante.materias', 'materias')
-          .leftJoinAndSelect('materias.curso', 'curso')
-          // Puedes seguir agregando más leftJoinAndSelect para otras relaciones
-          .getOne(); // Utiliza getOne() en lugar de getMany() para obtener solo un estudiante
       }
-
-    
-    //get alumnos con todas sus relaciones
-    async findAllWithRelations(): Promise<EstudianteEntity[]> {  
-        return this.estudianteRepository
-        .createQueryBuilder('estudiante')
-        .leftJoinAndSelect('estudiante.materias', 'materias')
-        .leftJoinAndSelect('materias.curso', 'curso')
-        // Puedes seguir agregando más leftJoinAndSelect para otras relaciones
-        .getMany();
+    }catch(error){
+      throw new HttpException({
+          status: HttpStatus.CONFLICT,
+          error: 'Error en Escuelas - ' + error
+      },HttpStatus.NOT_FOUND);
     }
+  }
 
-    async eliminarEstudiante(id: number): Promise<void>{
-        await this.estudianteRepository.delete(id);
-    }
+  findAll() {
+    return `This action returns all estudiante`;
+  }
+
+  findOne(id: number) {
+    return `This action returns a #${id} estudiante`;
+  }
+
+  update(id: number, estudianteDto: EstudianteDto) {
+    return `This action updates a #${id} estudiante`;
+  }
+
+  remove(id: number) {
+    return `This action removes a #${id} estudiante`;
+  }
 }

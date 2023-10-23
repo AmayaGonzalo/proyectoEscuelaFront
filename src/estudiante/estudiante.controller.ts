@@ -1,52 +1,34 @@
-/*
-https://docs.nestjs.com/controllers#controllers
-*/
-
-import { Controller, Get, Post, Put, Delete, Param, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { EstudianteService } from './estudiante.service';
-import { EstudianteEntity } from './estudiante.entity';
-import { EstudianteDto } from './estudiante.interface';
+import { EstudianteDto } from './dto/create-estudiante.dto';
+import { UpdateEstudianteDto } from './dto/update-estudiante.dto';
 
-@Controller('estudiantes')
+@Controller('estudiante')
 export class EstudianteController {
-    constructor(private readonly estudiantesService : EstudianteService){}
+  constructor(private readonly estudianteService: EstudianteService) {}
 
-    // @Get()
-    // async getEstudiantes(): Promise<EstudianteEntity[]>{
-    //     return await this.estudiantesService.getAllEstudiantes();
-    // }
-    @Get()
-  async findAll(): Promise<EstudianteEntity[]> {
-    return this.estudiantesService.findAllWithRelations();
+  @Post('nuevo')
+  async create(@Body() estudianteDto: EstudianteDto):Promise<EstudianteDto> {
+    return await this.estudianteService.create(estudianteDto);
   }
 
-    @Post()
-    async addEstudiante(@Body() estudiante: EstudianteDto): Promise<EstudianteEntity>{
-        return await this.estudiantesService.AddEstudiante(estudiante);
-    }
-
-    @Put(':id')
-    async editarEstudiante(@Param() params, @Body() estudiante: EstudianteEntity){
-        return await this.estudiantesService.editarEstudiante(params.id, estudiante);
-    }
-
-    @Delete(':id')
-    async deleteEstudiante(@Param() params){
-        return await this.estudiantesService.eliminarEstudiante(params.id);
-    }
-
-    
-  // @Get('/mate')
-  // async findAllWithMaterias(): Promise<EstudianteEntity[]> {
-  //   return this.estudiantesService.findAllWithMaterias();
-  // }
+  @Get()
+  findAll() {
+    return this.estudianteService.findAll();
+  }
 
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<EstudianteEntity> {
-    return this.estudiantesService.getEstudianteById(id);
+  findOne(@Param('id') id: string) {
+    return this.estudianteService.findOne(+id);
   }
 
-    
+  @Patch(':id')
+  update(@Param('id') id: number, @Body() estudianteDto: EstudianteDto) {
+    return this.estudianteService.update(id, estudianteDto);
+  }
 
-    
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.estudianteService.remove(+id);
+  }
 }
