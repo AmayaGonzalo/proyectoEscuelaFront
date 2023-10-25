@@ -23,24 +23,48 @@ constructor(@InjectRepository(Estudiante)
     }catch(error){
       throw new HttpException({
           status: HttpStatus.CONFLICT,
-          error: 'Error en Escuelas - ' + error
+          error: 'Error en Estudiantes - ' + error
       },HttpStatus.NOT_FOUND);
     }
   }
 
-  findAll() {
-    return `This action returns all estudiante`;
+  async findAll():Promise<EstudianteDto[]> {
+    try{
+      const estudiantes: EstudianteDto[] = await this.estudianteRepository.find();
+      if(!estudiantes){
+        throw new Error('No se encontró la lista de estudiantes');
+      }else{
+        return estudiantes;
+      }
+    }catch(error){
+      throw new HttpException({
+          status: HttpStatus.CONFLICT,
+          error: 'Error en Estudiantes - ' + error
+      },HttpStatus.NOT_FOUND);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} estudiante`;
+  async findOne(id: number):Promise<EstudianteDto> {
+    try{
+      const estudiante : EstudianteDto = await this.estudianteRepository.findOne({ where:{ id:id }});
+      if(!estudiante){
+        throw new Error('No se encontro el estudiante')
+      }else{
+        return estudiante;
+      }
+    }catch(error){
+      throw new HttpException({
+          status: HttpStatus.CONFLICT,
+          error: 'Error en Estudiantes - ' + error
+      },HttpStatus.NOT_FOUND);
+    }
   }
 
-  update(id: number, estudianteDto: EstudianteDto) {
-    return `This action updates a #${id} estudiante`;
-  }
+  // update(id: number, estudianteDto: EstudianteDto) {
+  //   return `This action updates a #${id} estudiante`;
+  // }
 
-  remove(id: number) {
-    return `This action removes a #${id} estudiante`;
-  }
+  // remove(id: number) {
+  //   return `This action removes a #${id} estudiante`;
+  // }
 }

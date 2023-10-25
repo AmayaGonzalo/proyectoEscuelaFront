@@ -1,6 +1,5 @@
 import { EscuelaModule } from './escuela/escuela.module';
 import { MateriaModule } from './materia/materia.module';
-import { EstudianteModule } from './estudiante/estudiante.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -13,7 +12,8 @@ import { EstudianteModule } from './estudiante/estudiante.module';
     EscuelaModule,
     CursoModule,
     MateriaModule,
-    EstudianteModule, TypeOrmModule.forRoot({
+    EstudianteModule, 
+    TypeOrmModule.forRoot({
       "type": "mysql",
       "host": "localhost",
       "port": 3306,

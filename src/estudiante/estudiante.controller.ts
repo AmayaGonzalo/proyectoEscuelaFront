@@ -1,7 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
 import { EstudianteService } from './estudiante.service';
 import { EstudianteDto } from './dto/create-estudiante.dto';
-import { UpdateEstudianteDto } from './dto/update-estudiante.dto';
 
 @Controller('estudiante')
 export class EstudianteController {
@@ -13,22 +12,22 @@ export class EstudianteController {
   }
 
   @Get()
-  findAll() {
-    return this.estudianteService.findAll();
+  async findAll():Promise<EstudianteDto[]> {
+    return await this.estudianteService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.estudianteService.findOne(+id);
+  async findOne(@Param('id') id:number):Promise<EstudianteDto> {
+    return await this.estudianteService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: number, @Body() estudianteDto: EstudianteDto) {
-    return this.estudianteService.update(id, estudianteDto);
-  }
+  // @Put('modificar/:id')
+  // async update(@Param('id') id:number, @Body() estudianteDto: EstudianteDto):Promise<EstudianteDto> {
+  //   return await this.estudianteService.update(id, estudianteDto);
+  // }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.estudianteService.remove(+id);
-  }
+  // @Delete('eliminar/:id')
+  // async remove(@Param('id') id:number): Promise<{ message:string }> {
+  //   return await this.estudianteService.remove(id);
+  // }
 }
